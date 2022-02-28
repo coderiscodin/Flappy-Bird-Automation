@@ -63,3 +63,30 @@ class Bird:
         This function will move the bird after every single frame
         (If FPS = 30,this function will get called 30 times per second) 
         '''
+        self.tick_count += 1
+
+    
+        displacement = self.vel*(self.tick_count) + 0.5*(3)*(self.tick_count)**2  
+        # calculate displacement(distance) in pixels or say tiles we moved upward with every time we want to move upwards
+
+        # terminal velocity
+        if displacement >= 16:
+            displacement = (displacement/abs(displacement)) * 16
+        #ensures we going way downwards so we set a limit that we can not go downwards bellow a certain limit based on our max point upwards we reached 
+
+        if displacement < 0:
+            displacement -= 2
+        #set the upwards displacement limit as form equation in line 69 the more the tick count,more higher will be displacement 
+        #lets say a bird is moving -1 upwards for tickcount 3 and <-2 for tickcount 4 and will go even higher with higher tick count so avoid exponential increase we set upper limit to it 
+  
+        self.y = self.y + displacement
+        #adding the displacement to our actual psition
+
+
+        #by tilting (here) it means tilting actual image of the bird after a certain point
+        if displacement < 0 or self.y < self.height + 50:  # tilt up
+            if self.tilt < self.MAX_ROTATION:
+                self.tilt = self.MAX_ROTATION
+        else:  # tilt down
+            if self.tilt > -90:
+                self.tilt -= self.ROT_VEL
