@@ -173,6 +173,23 @@ class Pipe:
         #getting the bottom of the pipe
         self.bottom = self.height + self.GAP
 
+    def move(self):
+        """
+        # move pipe based on velcity//
+        """
+        self.x -= self.VEL
+
+    def draw(self, win):
+        """
+        draw both the top and bottom of the pipe
+        """
+        # draw top of the pipe
+        win.blit(self.PIPE_TOP, (self.x, self.top))
+        # draw bottom of the pipe
+        win.blit(self.PIPE_BOTTOM, (self.x, self.bottom))
+    
+    
+
 
 
 def draw_window(win,bird):
