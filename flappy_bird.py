@@ -15,13 +15,13 @@ bird_images = [pygame.transform.scale2x(pygame.image.load(os.path.join("images" 
 #.convert_alpha() helps in faster rendering of image to provide real game experience
 
 #image of pipe
-pipe_images = pygame.transform.scale2x(pygame.image.load(os.path.join("images" , "pipe.png")).convert_alpha())
+pipe_images = pygame.transform.scale2x(pygame.image.load(os.path.join("images" , "pipe.png")))
 
 #image of base(bottom/floor)
-base_images = pygame.transform.scale2x(pygame.image.load(os.path.join("images" , "base.png")).convert_alpha())
+base_images = pygame.transform.scale2x(pygame.image.load(os.path.join("images" , "base.png")))
 
 #image of back ground
-bg_images = pygame.transform.scale2x(pygame.image.load(os.path.join("images" , "bg.png")).convert_alpha())
+bg_images = pygame.transform.scale2x(pygame.image.load(os.path.join("images" , "bg.png")))
 
 class Bird:
     IMGS = bird_images
@@ -122,7 +122,7 @@ class Bird:
 
         # tilt the bird
         rotated_image = pygame.transform.rotate(self.img , self.tilt)
-        new_react = rotated_image.get_rect(centre = self.img.get_rect(topleft =  (self.x , self.y)).centre)
+        new_rect = rotated_image.get_rect(center = self.img.get_rect(topleft =  (self.x , self.y)).center)
         win.blit(rotated_image , new_rect.topleft)
 
     def get_mask(self):
@@ -131,14 +131,58 @@ class Bird:
         """
         return pygame.mask.from_surface(self.img)
 
+class Pipe:
+    """
+    represents a pipe object
+    """
+    GAP = 200
+    #Space between pipes
+    VEL = 5
+    #Moving the pipes as we arent actually moving our bird instead we are moving pipes towards bird to vilualize bird to be moving
+
+    def __init__(self, x):
+        """
+        initialize pipe object
+        using x only because the height(y-parameter) of the pipe completely random
+        """
+        self.x = x
+        self.height = 0
+
+        #keeping track of top and bottom positions of the pipe is
+        self.top = 0
+        self.bottom = 0
+
+        #We aill use image that we had as it is for the bottom pipe
+        self.PIPE_BOTTOM = pipe_img
+        #We are flipping the pipe upside down to get the image for the top pipe
+        self.PIPE_TOP = pygame.transform.flip(pipe_img, False, True)
+        
+        #Keeping track if bird has passed the pipe and to check for collisions
+        self.passed = False
+        #This method will define position of top and bottom pipes and the gap between them
+        self.set_height()
+
+    def set_height(self):
+        """
+        set the height of the pipe, from the top of the screen
+        """
+        #Using random function generating the position of the top of the pipe within range of our screen
+        self.height = random.randrange(50, 450)
+        #getting the bottom of the pipe but as this pipe will be filpped upside-down it will actually be top of the image(extreme y position towards top)
+        self.top = self.height - self.PIPE_TOP.get_height()
+        #getting the bottom of the pipe
+        self.bottom = self.height + self.GAP
+
+
+
 def draw_window(win,bird):
-    win.blit(BG_IMG , (0,0))
+    win.blit(bg_images , (0,0))
     bird.draw(win)
     pygame.display.update()
 
 def main():
     bird = Bird(200,200)
-    win = pygame.display.set_mde((WIN_WIDTH,WIN_HEIGHT))
+    win = pygame.display.set_mode((WIN_WIDTH,WIN_HEIGHT))
 
     run = True
     while(run):
@@ -149,4 +193,3 @@ def main():
     pygame.quit()
     quit()
 main()
-
