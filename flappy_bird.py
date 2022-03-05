@@ -24,12 +24,21 @@ base_images = pygame.transform.scale2x(pygame.image.load(os.path.join("images" ,
 bg_images = pygame.transform.scale2x(pygame.image.load(os.path.join("images" , "bg.png")))
 
 class Bird:
+    """
+    Bird class representing the flappy bird
+    """
     IMGS = bird_images
     MAX_ROTATION = 25    # How much the bird will rotate while going up and down
     ROTATION_VELOCITY = 20    # Velocity(speed) at which rotation will take place
     ANIMATION_TIME = 5    # How fast will animation change((Here)How fast the bird will be flapping wings)
 
     def __init__(self, x, y):
+        """
+        Initialize the object
+        :param x: starting x pos (int)
+        :param y: starting y pos (int)
+        :return: None
+        """
         # position/(x and y co-ordinates) of the bird
         self.x = x
         self.y = y
@@ -48,10 +57,12 @@ class Bird:
         self.img = self.IMGS[0]
 
     def jump(self):
-        '''
+        """
         This function will get called with every tick count 
         as with every touch or key call bird will fly(jump(here)) 
-        '''
+        :param : None
+        :return: None
+        """
         #in pygame due to co-ordinates system(4th-quadrent) , to move upwards(jump) we are actualy moving form a negative point towards zero
         self.vel = -10.5
         #this will keep track when we last jumped
@@ -60,10 +71,12 @@ class Bird:
         self.height = self.y
     
     def move(self):
-        '''
+        """
         This function will move the bird after every single frame
         (If FPS = 30,this function will get called 30 times per second) 
-        '''
+        :param : None
+        :return: None
+        """
         self.tick_count += 1
         
         # calculate displacement(distance) in pixels or say tiles we moved upward with every time we want to move upwards
@@ -97,6 +110,8 @@ class Bird:
         """
         animate the bird
         win represents pygame window or surface
+        :param win: pygame window or surface
+        :return: None
         """
         #counting number of images shown
         self.img_count += 1
@@ -128,6 +143,8 @@ class Bird:
     def get_mask(self):
         """
         gets the mask for the current image of the bird for colisions between images
+        :param : None
+        :return : None
         """
         return pygame.mask.from_surface(self.img)
 
@@ -144,6 +161,8 @@ class Pipe:
         """
         initialize pipe object
         using x only because the height(y-parameter) of the pipe completely random
+        :param x: int
+        :return" None
         """
         self.x = x
         self.height = 0
@@ -165,6 +184,7 @@ class Pipe:
     def set_height(self):
         """
         set the height of the pipe, from the top of the screen
+        :return: None
         """
         #Using random function generating the position of the top of the pipe within range of our screen
         self.height = random.randrange(50, 450)
@@ -175,29 +195,70 @@ class Pipe:
 
     def move(self):
         """
-        # move pipe based on velcity//
+        # move pipe based on velcity
+        :param: None
+        :return: None
         """
         self.x -= self.VEL
 
     def draw(self, win):
         """
         draw both the top and bottom of the pipe
+        :param win: pygame window/surface
+        :return:None
         """
         # draw top of the pipe
         win.blit(self.PIPE_TOP, (self.x, self.top))
         # draw bottom of the pipe
         win.blit(self.PIPE_BOTTOM, (self.x, self.bottom))
     
-    
+    def collide(self, bird, win):
+        """
+        returns if a point is colliding with the pipe or not using approach similar to a hitbox for an object
+        :param bird: Bird object
+        :return: Bool
+        """
+        #Getting the mask(hit box of the bird)
+        bird_mask = bird.get_mask()
+        #Getting mask for the pipe on top
+        top_mask = pygame.mask.from_surface(self.PIPE_TOP)
+        #Getting mask for the pipe on bottom
+        bottom_mask = pygame.mask.from_surface(self.PIPE_BOTTOM)
+        #Distance between the mask of the bird and pipe at top
+        #round() is used to
+        top_offset = (self.x - bird.x, self.top - round(bird.y))
+        #Distance between the mask of the bird and pipe at bottom
+        bottom_offset = (self.x - bird.x, self.bottom - round(bird.y))
+        #If mask dont collide than we does not need to check if pixels overlap or not
 
+        #Finding if point of collision or (say point where pixels overlap) between pipe at bottom and bird
+        b_point = bird_mask.overlap(bottom_mask, bottom_offset)
+        #Finding if point of collision between pipe at top and bird
+        t_point = bird_mask.overlap(top_mask,top_offset)
+
+        #If pixels collision points exist than collision has occured so return True
+        if b_point or t_point:
+            return True
+        #Else return false
+        return False
 
 
 def draw_window(win,bird):
+    """
+    specifying the window of the game
+    :param win: pygame window/surface
+    :return: None
+    """
     win.blit(bg_images , (0,0))
     bird.draw(win)
     pygame.display.update()
 
 def main():
+    """
+    main method to start the game
+    :param: None
+    :return: None
+    """
     bird = Bird(200,200)
     win = pygame.display.set_mode((WIN_WIDTH,WIN_HEIGHT))
 
