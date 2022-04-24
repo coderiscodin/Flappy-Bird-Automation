@@ -4,7 +4,7 @@
 Using NEAT python
 
 
-#REFERENCES TO DOCS
+# REFERENCES TO DOCS
 
 Python Docs : https://docs.python.org/3/tutorial/index.html
 
