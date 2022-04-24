@@ -167,6 +167,7 @@ class Bird:
         self.img_count += 1
 
         #FOR ANIMATION OF BIRD,LOOP THROUGH THREE IMAGES(CREATING BIRD ANIMATION)
+        #SHOWING BIRD TO BE FLAPPING THROUGH 3 IMAGES
         if self.img_count <= self.ANIMATION_TIME:
             self.img = self.IMGS[0]
         elif self.img_count <= self.ANIMATION_TIME*2:
