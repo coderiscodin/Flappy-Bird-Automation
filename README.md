@@ -1,7 +1,7 @@
 # Flappy-Bird-Automation
 
 
-Using NEAT python
+Using Python , Pygame , NEAT-python
 
 
 # REFERENCES TO DOCS
